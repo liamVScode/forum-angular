@@ -1,0 +1,18 @@
+<div class="container chat-container">
+    <div class="chat-header">Beautiful Chat</div>
+    <div class="messages">
+        <div class="message sender" *ngFor="let item of messageList" [ngClass]="{'receiver': item.message_side === 'receiver', 'sender': item.message_side === 'sender'}">
+            <div class="message-text">{{item.message}}</div>
+            <img src="avatar2.jpg" alt="Avatar" />
+        </div>
+        <!-- Add more messages as needed -->
+    </div>
+    <div class="message-input">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Type your message..." [(ngModel)]="messageInput">
+            <div class="input-group-append">
+                <button class="btn send-button" type="button" (click)="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
