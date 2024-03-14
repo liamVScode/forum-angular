@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
-import { ChatMessage } from '../../models/chat-message';
+import { Message } from '../../models/message';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, HttpClientModule],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
@@ -23,25 +24,28 @@ export class ChatComponent  implements OnInit{
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.params['userId'];
-    this.chatService.joinRoom("ABC");
+    this.chatService.joinRoom(1);
+    this.chatService.loadChat();
     this.listenerMessage();
   }
 
   sendMessage(){
-    const chatMessage = {
-      message: this.messageInput,
-      user: this.userId
-    } as ChatMessage
-    this.chatService.sendMessage("ABC", chatMessage);
+    const message = {
+      content: this.messageInput,
+      userId: this.userId,
+      chatId: 1
+    } as Message
+    this.chatService.sendMessage(1, message);
     this.messageInput = '';
   }
 
-  listenerMessage(){
-    this.chatService.getMessageSubject().subscribe((messages: any) => {
-      this.messageList = messages.map((item: any) => ({
-        ...item,
-        message_side: item.user === this.userId ? 'sender': 'receiver'
+  listenerMessage() {
+    this.chatService.getMessageSubject().subscribe((messages: any[]) => {
+      this.messageList = messages.map((message: any) => ({
+        ...message,
+        sendOrReceive: Number(message.userId) === Number(this.userId) ? 'sender' : 'receiver',
       }))
     });
+
   }
 }
