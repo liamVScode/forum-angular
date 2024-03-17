@@ -50,7 +50,7 @@
 					</div>
 
 					<div class="text-right p-t-8 p-b-31">
-						<a href="#">
+						<a href="/forget-password">
 							Quên mật khẩu?
 						</a>
 					</div>
@@ -71,7 +71,7 @@
 					</div>
 
 					<div class="flex-c-m">
-						<a href="#" class="login100-social-item bg1">
+						<a href="#" class="login100-social-item bg1" (click)="loginWithFacebook()">
 							<i class="fa fa-facebook"></i>
 						</a>
 
@@ -79,9 +79,10 @@
 							<i class="fa fa-twitter"></i>
 						</a>
 
-						<a href="#" class="login100-social-item bg3">
+						<!-- <a href="#" class="login100-social-item bg3" (click)="loginWithGoogle1()">
 							<i class="fa fa-google"></i>
-						</a>
+						</a> -->
+            <asl-google-signin-button type='icon' size='medium'></asl-google-signin-button>
 					</div>
 
 					<div class="flex-col-c p-t-155">
@@ -89,7 +90,7 @@
 							Hoặc đăng ký tài khoản mới
 						</span>
 
-						<a href="#" class="txt2">
+						<a href="/signup" class="txt2">
 							Đăng ký
 						</a>
 					</div>

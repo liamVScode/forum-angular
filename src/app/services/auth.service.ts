@@ -16,6 +16,32 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.urlBe}/api/v1/auth/signin`, loginData);
   }
 
+  signinWithFacebook(accessToken: string){
+    return this.http.post<LoginResponse>(`${this.urlBe}/api/v1/auth/facebook/signin`, accessToken);
+  }
+
+  signinWithGoogle(accessToken: string){
+    return this.http.post<LoginResponse>(`${this.urlBe}/api/v1/auth/google/signin`, accessToken);
+  }
+
+  signup(firstName: string, lastName: string, location: string, email: string, password: string){
+    const signupInfo = {
+      firstName,
+      lastName,
+      location,
+      email,
+      password
+    }
+    return this.http.post(`${this.urlBe}/api/v1/auth/signup`, signupInfo);
+  }
+
+  forgetPassword(email: string){
+    const body = {
+      email: email
+    };
+    return this.http.post(`${this.urlBe}/api/v1/auth/forget-password`, body);
+  }
+
   isLoggedIn(){
     return !!localStorage.getItem('token');
   }
@@ -30,4 +56,6 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
   }
+
+
 }

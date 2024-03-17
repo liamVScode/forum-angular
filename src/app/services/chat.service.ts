@@ -13,7 +13,7 @@ export class ChatService {
 
   private stompClient: any;
 
-  private messageSubject = new BehaviorSubject<Message[]>([]);
+  private messageSubject: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
 
   constructor(private http:HttpClient){
     this.initConnectionWebSocket();
@@ -36,7 +36,7 @@ export class ChatService {
     ).subscribe(sortedMessages => {
       this.messageSubject.next(sortedMessages);
     });
-  }
+  } 
 
   joinRoom(chatId: number) {
     // ket noi, dang ky nhan tin nhan tu server

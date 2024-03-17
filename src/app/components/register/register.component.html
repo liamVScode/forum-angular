@@ -1,0 +1,88 @@
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-9 col-xl-7">
+        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Sign Up</h3>
+            <form>
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+
+                  <div class="form-outline">
+                    <input type="text" id="firstName" class="form-control form-control-lg" [(ngModel)]="firstName" name="firstName"/>
+                    <label class="form-label" for="firstName">Họ</label>
+                  </div>
+
+                </div>
+                <div class="col-md-6 mb-4">
+
+                  <div class="form-outline">
+                    <input type="text" id="lastName" class="form-control form-control-lg" [(ngModel)]="lastName" name="lastName"/>
+                    <label class="form-label" for="lastName">Tên</label>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                  <div class="form-outline datepicker w-100">
+                    <input type="text" class="form-control form-control-lg" id="birthdayDate" [(ngModel)]="location" name="location"/>
+                    <label for="birthdayDate" class="form-label">Địa chỉ</label>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-4 pb-2">
+
+                  <div class="form-outline">
+                    <input type="email" id="emailAddress" class="form-control form-control-lg" [(ngModel)]="email" name="email"/>
+                    <label class="form-label" for="emailAddress">Email</label>
+                  </div>
+
+                </div>
+                <div class="col-md-6 mb-4 pb-2">
+
+                  <div class="form-outline">
+                    <input type="password" id="password" class="form-control form-control-lg" [(ngModel)]="password" name="password"/>
+                    <label class="form-label" for="password">Mật khẩu</label>
+                  </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4 pb-2">
+
+                  <div class="form-outline">
+                    <input type="password" id="confirmPassword" class="form-control form-control-lg" [(ngModel)]="acceptPassword" name="confirmPassword"/>
+                    <label class="form-label" for="confirmPassword">Xác nhận mật khẩu</label>
+                  </div>
+
+                </div>
+              </div>
+
+              <div *ngIf="errorMessage" class="mb-3" style="color: red;">
+                {{ errorMessage }}
+              </div>
+
+              <div class="row">
+                <div class="col-6 text-end">
+                  <a class="btn btn-primary btn-lg" (click)="signup()">Đăng ký</a>
+                </div>
+                <div class="col-6 text-start">
+                  <a href="/login" class="btn btn-primary btn-lg">Đăng nhập</a>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
