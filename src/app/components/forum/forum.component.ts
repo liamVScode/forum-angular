@@ -10,9 +10,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ForumComponent {
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService){
 
-  logout(){
-    this.authService.logout();
   }
+
+
 }

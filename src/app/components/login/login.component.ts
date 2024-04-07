@@ -18,15 +18,11 @@ export class LoginComponent{
   password: string = "";
 
   constructor(private authService: AuthService, private router: Router, private socialAuthService: SocialAuthService){
-    // this.authService.redirectToForumIfLoggedIn();
   }
 
   login(){
     this.authService.login(this.email, this.password).subscribe({
-      next: (response: any) => {
-        localStorage.setItem('token', String(response.token));
-        localStorage.setItem('refreshToken', String(response.refreshToken));
-
+      next: (response) => {
         this.router.navigate(["/forum"]);
       },
       error: (error) => {

@@ -1,0 +1,195 @@
+<!-- Khung chính -->
+<div class="container">
+  <!-- Khung 1: Nút Filter, được đặt bên phải -->
+  <div class="row">
+    <div class="d-flex justify-content-end col-12 col-md-8 filter-block">
+      <!-- Trigger/Button to Open Modal -->
+      <button type="button" class="btn btn-link btn-filter" data-bs-toggle="modal" data-bs-target="#filterModal">
+        Filters
+      </button>
+    </div>
+    <div class="comment-box col-12 col-md-8">
+      <!-- Row chứa hai cột chính -->
+      <div class="row mt-3">
+          <!-- Cột đầu tiên có chiều rộng linh hoạt trên các breakpoints -->
+          <div class="col-12 col-md-1">
+            <i class="fa-sharp fa-solid fa-circle-question fa-bounce fa-3x"></i>
+          </div>
+
+          <!-- Cột thứ hai chiếm phần còn lại và có chiều rộng linh hoạt trên các breakpoints -->
+          <div class="col-12 col-md-10">
+              <!-- Row chứa hai khung ngang -->
+              <div class="row mb-3 g-0">
+                <!-- Khung Dropdown, tự động điều chỉnh chiều rộng trên các breakpoints -->
+                <div class="col-2 d-flex align-items-center border-end">
+                  <select class="form-select">
+                    <option value=""></option>
+                    <option *ngFor="let prefix of topicPrefix.result.prefix" [value]="prefix.prefixId" [(ngModel)]="prefixId">{{ prefix.prefixName }}</option>
+                  </select>
+                </div>
+
+
+                <!-- Khung Title, tự động điều chỉnh chiều rộng trên các breakpoints -->
+                <div class="col d-flex align-items-center">
+                    <input type="text" class="form-control" [(ngModel)]="titleInput" id="titleInput" placeholder="Enter title...">
+                </div>
+            </div>
+
+
+              <!-- Nội dung khác trong cột thứ hai -->
+              <!-- Các button -->
+              <button class="btn btn-link btn-discuss" type="button" (click)="handleButtonClick(1)" [ngClass]="{'active': selectedButton === 1}">Thảo luận</button>
+              <button class="btn btn-link btn-poll" type="button" (click)="handleButtonClick(2)" [ngClass]="{'active': selectedButton === 2}">Thăm dò ý kiến</button>
+
+              <!-- Form được hiển thị dựa trên việc nhấn Button 1 -->
+              <div *ngIf="showForm && selectedButton === 1">
+                <form (submit)="createPost()">
+                  <textarea class="form-control mt-4" rows="3" [(ngModel)]="textInput" name="textInput"></textarea>
+                  <button type="submit" class="btn btn-primary mt-5">Submit</button>
+                </form>
+              </div>
+
+              <!-- Form được hiển thị dựa trên việc nhấn Button 2 -->
+              <div *ngIf="showForm && selectedButton === 2" class="container">
+                <form (submit)="createPost()">
+                  <div class="row">
+                    <div class="col-12">
+                      <textarea class="form-control mt-4" rows="3" [(ngModel)]="textInput" name="textInput"></textarea>
+                    </div>
+                  </div>
+                  <div class="row mt-5">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="question">Câu hỏi</label>
+                        <input type="text" class="form-control" id="question" [(ngModel)]="questionInput" name="questionInput">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group" *ngFor="let response of responsesInput; let i = index">
+                        <label for="response{{i}}">Các phản hồi</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="responsesInput[i]"
+                          name="response{{i}}"
+                          (focus)="onInputFocus(i)"
+                          id="response{{i}}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <label>Số phản hồi cao nhất được chọn</label>
+                      <div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option1" [(ngModel)]="maxResponses" value="1">
+                          <label class="form-check-label" for="option1">Chỉ một</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option2" [(ngModel)]="maxResponses" value="true">
+                          <label class="form-check-label" for="option2">Không giới hạn</label>
+                        </div>
+                        <div class="form-check form-inline">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option3" [(ngModel)]="maxResponses" value="custom">
+                          <!-- Khi radio button được chọn, cho phép nhập số vào input number bên cạnh. -->
+                          <input type="number" class="w-25 form-control ml-2" id="customNumber" [(ngModel)]="customMaxResponses" name="customMaxResponses" [disabled]="maxResponses !== 'custom'">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <label>Tùy chọn</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check1" [(ngModel)]="changeVote" name="option1">
+                        <label class="form-check-label" for="check1">Cho phép mọi người thay đổi bình chọn của họ</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check2" [(ngModel)]="publicVote" name="option2">
+                        <label class="form-check-label" for="check2">Công khai kết quả vote</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check3" [(ngModel)]="displayVote" name="option3">
+                        <label class="form-check-label" for="check3">Cho phép hiển thị vote dù không có vote</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary mt-5">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+
+          </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Popup Menu -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filterModalLabel">Lọc</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form trong Modal -->
+        <form>
+          <!-- Khung Prefix -->
+          <div class="mb-3">
+            <label for="prefixSelect" class="form-label">Prefix</label>
+            <select class="form-select" id="prefixSelect">
+              <!-- Options -->
+            </select>
+          </div>
+
+          <!-- Khung Tìm kiếm -->
+          <div class="mb-3">
+            <label for="searchInput" class="form-label">Tìm kiếm</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Nhập từ khóa...">
+          </div>
+
+          <!-- Khung Thời gian cập nhật -->
+          <div class="mb-3">
+            <label for="updateTimeSelect" class="form-label">Thời gian cập nhật</label>
+            <select class="form-select" id="updateTimeSelect">
+              <!-- Options -->
+            </select>
+          </div>
+
+          <!-- Khung Loại bài viết -->
+          <div class="mb-3">
+            <label for="postTypeSelect" class="form-label">Loại bài viết</label>
+            <select class="form-select" id="postTypeSelect">
+              <!-- Options -->
+            </select>
+          </div>
+
+          <!-- Khung Sắp xếp -->
+          <div class="mb-3">
+            <label for="sort" class="form-label">Sắp xếp:</label>
+            <div class="d-flex justify-content-between">
+              <select class="form-select w-49">
+                <!-- Options -->
+              </select>
+              <select class="form-select w-49">
+                <!-- Options -->
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary">Áp dụng</button>
+      </div>
+    </div>
+  </div>
+</div>

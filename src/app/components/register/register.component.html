@@ -5,22 +5,24 @@
         <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
           <div class="card-body p-4 p-md-5">
             <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Sign Up</h3>
-            <form>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
               <div class="row">
                 <div class="col-md-6 mb-4">
 
                   <div class="form-outline">
-                    <input type="text" id="firstName" class="form-control form-control-lg" [(ngModel)]="firstName" name="firstName"/>
+                    <input type="text" id="firstName" class="form-control form-control-lg" formControlName="firstName"/>
                     <label class="form-label" for="firstName">Họ</label>
+                    <div *ngIf="registerForm.controls['firstName'].errors?.['required'] && registerForm.controls['firstName'].touched" style="color: red;">Họ không được để trống.</div>
                   </div>
 
                 </div>
                 <div class="col-md-6 mb-4">
 
                   <div class="form-outline">
-                    <input type="text" id="lastName" class="form-control form-control-lg" [(ngModel)]="lastName" name="lastName"/>
+                    <input type="text" id="lastName" class="form-control form-control-lg" formControlName="lastName"/>
                     <label class="form-label" for="lastName">Tên</label>
+                    <div *ngIf="registerForm.controls['lastName'].errors?.['required'] && registerForm.controls['lastName'].touched" style="color: red;">Tên không được để trống.</div>
                   </div>
 
                 </div>
@@ -30,9 +32,10 @@
 
                 <div class="col-md-6 mb-4">
 
-                  <div class="form-outline datepicker w-100">
-                    <input type="text" class="form-control form-control-lg" id="birthdayDate" [(ngModel)]="location" name="location"/>
-                    <label for="birthdayDate" class="form-label">Địa chỉ</label>
+                  <div class="form-outline">
+                    <input type="text" id="location" class="form-control form-control-lg" formControlName="location"/>
+                    <label class="form-label" for="location">Địa chỉ</label>
+                    <div *ngIf="registerForm.controls['location'].errors?.['required'] && registerForm.controls['location'].touched" style="color: red;">Địa chỉ không được để trống.</div>
                   </div>
 
                 </div>
@@ -42,16 +45,20 @@
                 <div class="col-md-6 mb-4 pb-2">
 
                   <div class="form-outline">
-                    <input type="email" id="emailAddress" class="form-control form-control-lg" [(ngModel)]="email" name="email"/>
-                    <label class="form-label" for="emailAddress">Email</label>
+                    <input type="text" id="email" class="form-control form-control-lg" formControlName="email"/>
+                    <label class="form-label" for="email">Email</label>
+                    <div *ngIf="registerForm.controls['email'].errors?.['required'] && registerForm.controls['email'].touched" style="color: red;">Email không được để trống.</div>
+                    <div *ngIf="registerForm.controls['email'].errors?.['email'] && registerForm.controls['email'].touched" style="color: red;">Email không hợp lệ</div>
                   </div>
 
                 </div>
                 <div class="col-md-6 mb-4 pb-2">
 
                   <div class="form-outline">
-                    <input type="password" id="password" class="form-control form-control-lg" [(ngModel)]="password" name="password"/>
+                    <input type="password" id="password" class="form-control form-control-lg" formControlName="password"/>
                     <label class="form-label" for="password">Mật khẩu</label>
+                    <div *ngIf="registerForm.controls['password'].errors?.['required'] && registerForm.controls['password'].touched" style="color: red;">Mật khẩu không được để trống.</div>
+                    <div *ngIf="registerForm.controls['password'].errors?.['minLength'] && registerForm.controls['password'].touched" style="color: red;">Mật khẩu phải có ít nhất 6 ký tự.</div>
                   </div>
 
                 </div>
@@ -59,20 +66,20 @@
                 <div class="col-md-6 mb-4 pb-2">
 
                   <div class="form-outline">
-                    <input type="password" id="confirmPassword" class="form-control form-control-lg" [(ngModel)]="acceptPassword" name="confirmPassword"/>
+                    <input type="password" id="confirmPassword" class="form-control form-control-lg" formControlName="confirmPassword"/>
                     <label class="form-label" for="confirmPassword">Xác nhận mật khẩu</label>
+                    <div *ngIf="registerForm.controls['confirmPassword'].errors?.['required'] && registerForm.controls['confirmPassword'].touched" style="color: red;">Vui lòng nhập lại mật khẩu.</div>
+                    <div *ngIf="registerForm.controls['confirmPassword'].errors?.['mustMatch'] && registerForm.controls['confirmPassword']?.touched" style="color: red;">
+                      Mật khẩu và xác nhận mật khẩu không khớp.
+                    </div>
                   </div>
 
                 </div>
-              </div>
-
-              <div *ngIf="errorMessage" class="mb-3" style="color: red;">
-                {{ errorMessage }}
               </div>
 
               <div class="row">
                 <div class="col-6 text-end">
-                  <a class="btn btn-primary btn-lg" (click)="signup()">Đăng ký</a>
+                  <button type="submit" class="btn btn-primary btn-lg">Đăng ký</button>
                 </div>
                 <div class="col-6 text-start">
                   <a href="/login" class="btn btn-primary btn-lg">Đăng nhập</a>

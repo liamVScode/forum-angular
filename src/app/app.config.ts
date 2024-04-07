@@ -2,14 +2,22 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { importProvidersFrom } from "@angular/core";
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig, SocialLoginModule, SocialUser } from '@abacritt/angularx-social-login';
+import { TokenInterceptor } from '../TokenInterceptor';
+
+export function provideHttpInterceptors() {
+  return [
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+  ];
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     importProvidersFrom(HttpClientModule, SocialLoginModule, SocialAuthService, SocialUser),
+    ...provideHttpInterceptors(),
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

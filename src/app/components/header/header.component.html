@@ -1,0 +1,70 @@
+<header>
+  <div class="container-fluid">
+    <!-- Dòng cho logo căn trái -->
+    <div class="row mb-3">
+      <div class="col-auto">
+        <button class="navbar-brand text-warning" (click)="toForum()">
+          <img src="" alt="" style="height: 50px;"> <!-- Logo của bạn ở đây -->
+        </button>
+      </div>
+    </div>
+    <!-- Dòng cho navigation và các nút chức năng -->
+    <div class="row">
+      <div class="col-12">
+        <nav class="navbar navbar-expand-lg">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <button class="nav-link active text-light" aria-current="page" (click)="toHome()">Trang chủ</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link text-light" (click)="toForum()">Diễn đàn</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link text-light">About</button>
+              </li>
+            </ul>
+            <div class="d-flex">
+              <button *ngIf="!isLoggedIn" class="btn btn-warning me-2" type="button" (click)="toLogin()">Đăng nhập</button>
+              <button *ngIf="!isLoggedIn" class="btn btn-outline-warning" type="button" (click)="toRegister()">Đăng ký</button>
+              <div *ngIf="isLoggedIn" class="dropdown">
+                <button class="btn position-relative" type="button">
+                  <i class="fa-regular fa-bell"></i>
+                  <!-- <span *ngIf="hasNotification" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    Bạn có thể đặt một số ở đây nếu muốn hiển thị số lượng thông báo
+                    <span class="visually-hidden">Thông báo mới</span>
+                  </span> -->
+                </button>
+
+                <button class="btn" type="button">
+                  <i class="fa-sharp fa-regular fa-comment"></i>
+                </button>
+                <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  Username
+                </button>
+
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li><button class="dropdown-item" href="#">Hồ sơ</button></li>
+                  <li><button class="dropdown-item" href="#">Cài đặt</button></li>
+                  <li><button class="dropdown-item" (click)="logout()">Đăng xuất</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div class="nav-container">
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li class="nav-item"><button class="nav-link" id="new-posts">Bài viết mới</button></li>
+            <li class="nav-item"><button class="nav-link" id="latest">Mới nhất</button></li>
+        </ul>
+    </nav>
+  </div>
+</header>

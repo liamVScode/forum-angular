@@ -1,4 +1,7 @@
 export interface LoginResponse{
-  token: string;
-  refreshToken: string;
+  code: number;
+  result: {
+    token: string;
+    refreshToken: string;
+  };
 }

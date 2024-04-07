@@ -1,0 +1,78 @@
+@media (max-width: 768px) {
+  .post-header, .comment {
+    flex-direction: column;
+  }
+}
+
+.post-header{
+  padding-bottom: 10px;
+}
+
+.col-auto i{
+  color: #6c757d;
+}
+
+.post-title{
+  color: white;
+}
+
+
+
+.comment-box {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  margin-bottom: 30px;
+}
+
+.comment-box .border-bottom, .comment-box .border-end {
+  border-color: #dee2e6; /* Điều chỉnh màu viền phân chia */
+}
+
+.comment-content {
+  white-space: pre-wrap;
+}
+
+.comment-time, .comment-number {
+  color: #6c757d; /* Màu xám cho thời gian và thứ tự bình luận */
+}
+
+/* Điều chỉnh các nút sử dụng icon */
+.btn-edit, .btn-share, .btn-like, .btn-username{
+  border: none;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.btn-username:hover{
+  text-decoration: underline;
+}
+
+.btn-edit:hover, .btn-share:hover, .btn-reply:hover, .btn-like:hover {
+  background-color: #606ff0;
+}
+
+.info-user{
+  background-color: #e0e9f1;
+}
+
+.user-name {
+  color: #00008B; /* Màu xanh navy */
+  font-weight: bold;
+}
+
+.border-dashed {
+  border-bottom: 1px dashed #ccc; /* Vạch ngăn cách kẻ đứt */
+}
+
+.likes-container {
+  background-color: #f0f0f0; /* Màu xám nhạt */
+  padding: 5px 10px; /* Thêm đệm */
+  display: inline-block; /* Hiển thị dạng khối nội dung */
+  border: 1px solid #A9A9A9;
+  border-left: 2px solid #0000FF;
+}
+
+
+
+
+

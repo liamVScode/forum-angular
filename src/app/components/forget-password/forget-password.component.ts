@@ -16,6 +16,7 @@ export class ForgetPasswordComponent {
 
 
   constructor(private authService: AuthService){
+
   }
 
   forgetPassword() {

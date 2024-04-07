@@ -1,0 +1,88 @@
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><button class="btn btn-link" href="#">Forum</button></li>
+      <li class="breadcrumb-item"><button class="btn btn-link" href="#">Topic</button></li>
+      <li class="breadcrumb-item active" aria-current="page"><button class="btn btn-link">Category</button></li>
+    </ol>
+  </nav>
+  <div *ngIf="postDetail" class="row">
+    <div class="col-12 col-md-8">
+        <div class="post-header d-flex align-items-center">
+            <!-- Chỉ hiển thị prefix nếu tồn tại -->
+            <span *ngIf="postDetail.result.prefix" class="prefix badge bg-secondary me-2">{{ postDetail.result.prefix.prefixName }}</span>
+            <h2 class="post-title m-0">{{ postDetail.result.title }}</h2>
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row align-items-center">
+    <div class="col-auto">
+      <!-- Icon tác giả (ví dụ: icon người dùng) -->
+      <i class="fas fa-user text-white"></i>
+    </div>
+    <div class="col-auto text-white">
+      <!-- Tên tác giả -->
+      {{ postDetail.result.user.firstName }} {{ postDetail.result.user.lastName }}
+    </div>
+    <div class="col-auto">
+      <!-- Icon thời gian (ví dụ: icon đồng hồ) -->
+      <i class="fas fa-clock text-white"></i>
+    </div>
+    <div class="col-auto text-white">
+      <!-- Thời gian -->
+      {{ postDetail.result.createAt | timeAgo}}
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="postDetail.result.commentDto; let comments of postDetail.result.commentDto"  class="container mt-4">
+  <div *ngFor="let comment of comments; let i = index" class="comment-box border rounded">
+    <div class="row g-0">
+      <!-- Left Section: Avatar and Author Name -->
+      <div class="col-3 col-md-2 d-flex flex-column align-items-center p-3 border-end info-user">
+        <img src="path_to_avatar.jpg" alt="Avatar" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
+        <button class="btn btn-link btn-username mt-2 user-name">{{ comment.user.firstName }} {{ comment.user.lastName }}</button>
+      </div>
+      <!-- Right Section: Comment Details -->
+      <div class="col-9 col-md-10">
+        <!-- Top Section: Time, Edit, Share, Comment Number -->
+        <div class="d-flex justify-content-between align-items-center border-bottom p-2" style="height: 50px;">
+          <span>{{ comment.createAt | timeAgo}}</span>
+          <div>
+            <button class="btn btn-outline-secondary btn-link btn-edit" (click)="handleEdit(i, comment.commentId)">Sửa</button>
+            <button class="btn btn-outline-primary btn-link btn-share">Chia sẻ</button>
+            <span>#{{ i + 1 }}</span>
+          </div>
+        </div>
+        <!-- Middle Section: Comment Content -->
+        <div class="p-2 comment-content">
+          {{ comment.content }}
+        </div>
+        <!-- Attachments -->
+        <div *ngIf="comment.imageUrls.length > 0" class="p-2">
+          <strong>Attachments:</strong>
+          <div class="d-flex">
+            <!-- Example Image Thumbnails -->
+            <img src="path_to_image1.jpg" alt="Attachment 1" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
+            <img src="path_to_image2.jpg" alt="Attachment 2" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
+            <!-- More thumbnails -->
+          </div>
+        </div>
+        <div class="p-2 d-flex justify-content-between align-items-center border-bottom">
+          <span>Chỉnh sửa lần cuối: {{ comment.updateAt | timeAgo}}</span>
+          <button class="btn btn-outline-primary btn-link">Trả lời</button>
+        </div>
+        <div class="p-2 d-flex justify-content-between align-items-center">
+          <div class="likes-container">Lượt thích: 5</div>
+          <button class="btn btn-outline-danger btn-link btn-like">Like</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
