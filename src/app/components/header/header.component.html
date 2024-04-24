@@ -42,8 +42,8 @@
                 <button class="btn" type="button">
                   <i class="fa-sharp fa-regular fa-comment"></i>
                 </button>
-                <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  Username
+                <button *ngIf="currentUser" class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ currentUser.firstName }} {{currentUser.lastName}}
                 </button>
 
 

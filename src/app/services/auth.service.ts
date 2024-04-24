@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginResponse } from '../models/loginRequest';
 import { Router } from '@angular/router';
-import { SignupRequest } from '../models/signupRequest';
 import { BehaviorSubject, catchError, tap } from 'rxjs';
-import { ResetPasswordRequest } from '../models/resetPasswordRequest';
+import { User } from '../models/User';
+import { LoginResponse } from '../models/LoginRequest';
+import { SignupRequest } from '../models/SignupRequest';
+import { ResetPasswordRequest } from '../models/ResetPasswordRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,9 @@ export class AuthService {
       tap((response : LoginResponse) => {
         console.log(response);
         localStorage.setItem('token', response.result.token);
-  // Nếu bạn cũng muốn lưu refreshToken
-  localStorage.setItem('refreshToken', response.result.refreshToken);
+        // Nếu bạn cũng muốn lưu refreshToken
+        localStorage.setItem('refreshToken', response.result.refreshToken);
+        localStorage.setItem('currentUser', JSON.stringify(response.result.userDto));
         this.loggedIn.next(true);
       })
     );
@@ -58,9 +60,20 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
+  getCurrentUser(): User | null {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+        return JSON.parse(userJson);
+    }
+    return null;
+  }
+
+
 
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('currentUser');
     this.loggedIn.next(false);
     this.router.navigate(['/login']);
   }

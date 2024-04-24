@@ -1,11 +1,11 @@
 <div class="container">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><button class="btn btn-link" href="#">Forum</button></li>
-      <li class="breadcrumb-item"><button class="btn btn-link" href="#">Topic</button></li>
-      <li class="breadcrumb-item active" aria-current="page"><button class="btn btn-link">Category</button></li>
-    </ol>
-  </nav>
+  <div class="button-links mb-3">
+    <button class="btn btn-link" (click)="router.navigate(['forum'])">Forums</button>
+    <span class="separator">></span>
+    <button class="btn btn-link" (click)="router.navigate(['forum'])">{{ topicPrefix.result.topic.topicName }}</button>
+    <span class="separator">></span>
+    <button class="btn btn-link" (click)="router.navigate(['/category', postDetail.result.category.categoryId])">{{ postDetail.result.category.categoryName }}</button>
+</div>
   <div *ngIf="postDetail" class="row">
     <div class="col-12 col-md-8">
         <div class="post-header d-flex align-items-center">
@@ -16,26 +16,52 @@
     </div>
   </div>
 
-<div class="container">
-  <div class="row align-items-center">
-    <div class="col-auto">
-      <!-- Icon tác giả (ví dụ: icon người dùng) -->
-      <i class="fas fa-user text-white"></i>
-    </div>
-    <div class="col-auto text-white">
-      <!-- Tên tác giả -->
-      {{ postDetail.result.user.firstName }} {{ postDetail.result.user.lastName }}
-    </div>
-    <div class="col-auto">
-      <!-- Icon thời gian (ví dụ: icon đồng hồ) -->
-      <i class="fas fa-clock text-white"></i>
-    </div>
-    <div class="col-auto text-white">
-      <!-- Thời gian -->
-      {{ postDetail.result.createAt | timeAgo}}
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <!-- Icon tác giả (ví dụ: icon người dùng) -->
+        <i class="fas fa-user text-white"></i>
+      </div>
+      <div class="col-auto text-white">
+        <!-- Tên tác giả -->
+        {{ postDetail.result.user.firstName }} {{ postDetail.result.user.lastName }}
+      </div>
+      <div class="col-auto">
+        <!-- Icon thời gian (ví dụ: icon đồng hồ) -->
+        <i class="fas fa-clock text-white"></i>
+      </div>
+      <div class="col-auto text-white">
+        <!-- Thời gian -->
+        {{ postDetail.result.createAt | timeAgo}}
+      </div>
+      <div class="col ml-auto" *ngIf="postDetail?.result?.user?.userId === currentUser?.userId && isLoggedIn">
+        <!-- Nút xóa, sử dụng ml-auto để đẩy sang phải -->
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Xóa bài</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true" #deleteModal>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel">Xác nhận xóa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn xóa bài viết này không?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+          <button type="button" class="btn btn-danger" (click)="deletePost()">Xóa bài</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
 
 
 <div *ngIf="postDetail.result.commentDto; let comments of postDetail.result.commentDto"  class="container mt-4">
@@ -44,45 +70,73 @@
       <!-- Left Section: Avatar and Author Name -->
       <div class="col-3 col-md-2 d-flex flex-column align-items-center p-3 border-end info-user">
         <img src="path_to_avatar.jpg" alt="Avatar" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
-        <button class="btn btn-link btn-username mt-2 user-name">{{ comment.user.firstName }} {{ comment.user.lastName }}</button>
+        <button class="btn btn-link btn-username mt-2 user-name">{{ comment?.user?.firstName }} {{ comment?.user?.lastName }}</button>
       </div>
       <!-- Right Section: Comment Details -->
       <div class="col-9 col-md-10">
         <!-- Top Section: Time, Edit, Share, Comment Number -->
         <div class="d-flex justify-content-between align-items-center border-bottom p-2" style="height: 50px;">
-          <span>{{ comment.createAt | timeAgo}}</span>
+          <span>{{ comment?.createAt | timeAgo}}</span>
           <div>
-            <button class="btn btn-outline-secondary btn-link btn-edit" (click)="handleEdit(i, comment.commentId)">Sửa</button>
+            <button *ngIf="currentUser?.userId === comment.user.userId" class="btn btn-outline-secondary btn-link btn-edit" (click)="handleEdit(i, comment.commentId)">Sửa</button>
             <button class="btn btn-outline-primary btn-link btn-share">Chia sẻ</button>
             <span>#{{ i + 1 }}</span>
           </div>
         </div>
         <!-- Middle Section: Comment Content -->
         <div class="p-2 comment-content">
-          {{ comment.content }}
+          {{ comment?.content }}
         </div>
         <!-- Attachments -->
-        <div *ngIf="comment.imageUrls.length > 0" class="p-2">
+        <div *ngIf="comment?.imageUrls?.length > 0" class="p-2">
           <strong>Attachments:</strong>
-          <div class="d-flex">
-            <!-- Example Image Thumbnails -->
-            <img src="path_to_image1.jpg" alt="Attachment 1" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
-            <img src="path_to_image2.jpg" alt="Attachment 2" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
-            <!-- More thumbnails -->
+          <div class="d-flex flex-wrap">
+            <img *ngFor="let imageUrl of comment?.imageUrls" [src]="imageUrl" class="img-thumbnail" style="width: 100px; height: auto; margin-right: 10px;">
           </div>
         </div>
         <div class="p-2 d-flex justify-content-between align-items-center border-bottom">
-          <span>Chỉnh sửa lần cuối: {{ comment.updateAt | timeAgo}}</span>
-          <button class="btn btn-outline-primary btn-link">Trả lời</button>
+          <span>Chỉnh sửa lần cuối: {{ comment?.updateAt | timeAgo}}</span>
+          <button *ngIf="isLoggedIn" class="btn btn-outline-primary btn-link">Trả lời</button>
         </div>
         <div class="p-2 d-flex justify-content-between align-items-center">
           <div class="likes-container">Lượt thích: 5</div>
-          <button class="btn btn-outline-danger btn-link btn-like">Like</button>
+          <button *ngIf="isLoggedIn" class="btn btn-outline-danger btn-link btn-like">Like</button>
         </div>
 
       </div>
     </div>
   </div>
 </div>
+
+
+<div *ngIf="currentUser && isLoggedIn" class="container mt-4">
+  <!-- Khung nhập bình luận mới -->
+  <div class="comment-box border rounded">
+    <div class="row g-0">
+      <!-- Mục bên trái: Ảnh đại diện và tên người dùng -->
+      <div class="col-3 col-md-2 d-flex flex-column align-items-center p-3 border-end">
+        <img src="path_to_your_avatar.jpg" alt="Ảnh đại diện" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
+        <div class="mt-2 user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+      </div>
+      <!-- Mục bên phải: Ô nhập bình luận -->
+      <div class="col-9 col-md-10 p-2">
+        <textarea class="form-control" rows="3" placeholder="Nhập bình luận của bạn..." [(ngModel)]="content"></textarea>
+        <button type="button" class="btn btn-outline-secondary mt-2" (click)="fileInput.click()">
+          <i class="fa fa-paperclip"></i> Attach Image
+        </button>
+        <input type="file" (change)="onFileSelected($event)" multiple hidden #fileInput>
+        <div class="image-container mt-2">
+          <div class="image-preview" *ngFor="let image of imagePreviews; let i = index">
+            <img [src]="image" class="img-thumbnail">
+            <button type="button" class="btn btn-danger btn-sm remove-btn" (click)="removeImage(i)">X</button>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-2 float-end" (click)="commentPost()">Gửi bình luận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 *ngIf="!isLoggedIn" class="container mt-4" style="color: #ffffff">Đăng nhập để thỏa ga bình luận nhé</h4>
 
 </div>

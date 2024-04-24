@@ -20,7 +20,7 @@ export const routes: Routes = [
   {path: 'signup', component: RegisterComponent, canActivate: [GuestGuard]},
   {path: 'forget-password', component: ForgetPasswordComponent, canActivate: [GuestGuard]},
   {path: 'reset-password', component: ResetPasswordComponent, canActivate: [GuestGuard]},
-  {path: 'detail-post/:postId', component: DetailPostComponent},
+  {path: 'category/:categoryId/detail-post/:postId', component: DetailPostComponent},
   {path: 'category/:categoryId', component: CategoryComponent},
-  {path: 'detail-post/edit-post/:postId', component: EditPostComponent, canActivate: [AuthGuard]}
+  {path: 'category/:categoryId/detail-post/edit-post/:postId', component: EditPostComponent, canActivate: [AuthGuard]}
 ];

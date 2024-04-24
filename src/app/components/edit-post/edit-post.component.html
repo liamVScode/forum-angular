@@ -1,1 +1,166 @@
-<p>edit-post works!</p>
+<!-- Khung chính -->
+<div class="container">
+  <div class="button-links mb-3">
+    <button class="btn btn-link" (click)="router.navigate(['forum'])">Forums</button>
+    <span class="separator">></span>
+    <button class="btn btn-link" (click)="router.navigate(['forum'])">{{ topicPrefix.result.topic.topicName }}</button>
+    <span class="separator">></span>
+    <button class="btn btn-link" (click)="router.navigate(['/category', postDetail.result.category.categoryId])">{{ postDetail.result.category.categoryName }}</button>
+  </div>
+  <!-- Khung 1: Nút Filter, được đặt bên phải -->
+  <div class="row">
+    <div class="comment-box col-12 col-md-8">
+
+
+
+      <!-- Row chứa hai cột chính -->
+      <div class="row mt-3">
+          <!-- Cột đầu tiên có chiều rộng linh hoạt trên các breakpoints -->
+          <div class="col-12 col-md-1">
+            <i class="fa-sharp fa-solid fa-circle-question fa-bounce fa-3x"></i>
+          </div>
+
+          <!-- Cột thứ hai chiếm phần còn lại và có chiều rộng linh hoạt trên các breakpoints -->
+          <div class="col-12 col-md-10">
+              <!-- Row chứa hai khung ngang -->
+              <div class="row mb-3 g-0">
+                <!-- Khung Dropdown, tự động điều chỉnh chiều rộng trên các breakpoints -->
+                <div class="col-2 d-flex align-items-center border-end" *ngIf="topicPrefix && topicPrefix.result && topicPrefix.result.prefix.length > 0">
+                  <select class="form-select" [(ngModel)]="prefixId">
+                    <option value=""></option>
+                    <option *ngFor="let prefix of topicPrefix?.result?.prefix" [value]="prefix.prefixId" [selected]="prefix.prefixId === prefixId">
+                      {{ prefix.prefixName }}
+                    </option>
+                  </select>
+                </div>
+
+
+
+                <!-- Title Post -->
+                <div class="col d-flex align-items-center">
+                    <input type="text" class="form-control" [(ngModel)]="titleInput" id="titleInput" placeholder="Enter title...">
+                </div>
+            </div>
+
+
+              <!-- Nội dung khác trong cột thứ hai -->
+              <!-- Các button -->
+              <button class="btn btn-link btn-discuss" type="button" (click)="handleButtonClick(1)" [ngClass]="{'active': selectedButton === 1}">Thảo luận</button>
+              <button class="btn btn-link btn-poll" type="button" (click)="handleButtonClick(2)" [ngClass]="{'active': selectedButton === 2}">Thăm dò ý kiến</button>
+
+              <!-- Form được hiển thị dựa trên việc nhấn Button 1 -->
+              <div *ngIf="showForm && selectedButton === 1">
+                <form (submit)="editPost()">
+                  <textarea class="form-control mt-4" rows="3" [(ngModel)]="textInput" name="textInput"></textarea>
+                  <button type="button" class="btn btn-outline-secondary mt-2" (click)="fileInput.click()">
+                    <i class="fa fa-paperclip"></i> Attach Image
+                  </button>
+                  <input type="file" (change)="onFileSelected($event)" multiple hidden #fileInput>
+                  <div class="image-container mt-2">
+                    <div class="image-preview" *ngFor="let image of imagePreviews; let i = index">
+                      <img [src]="image" class="img-thumbnail">
+                      <button type="button" class="btn btn-danger btn-sm remove-btn" (click)="removeImage(i)">X</button>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>
+              </div>
+
+
+
+
+              <!-- comment.component.html -->
+
+
+              <!-- Form được hiển thị dựa trên việc nhấn Button 2 -->
+              <div *ngIf="showForm && selectedButton === 2" class="container">
+                <form (submit)="editPost()">
+                  <div class="row">
+                    <div class="col-12">
+                      <textarea class="form-control mt-4" rows="3" [(ngModel)]="textInput" name="textInput"></textarea>
+                      <button type="button" class="btn btn-outline-secondary mt-2" (click)="fileInput.click()">
+                        <i class="fa fa-paperclip"></i> Attach Image
+                      </button>
+                      <input type="file" (change)="onFileSelected($event)" multiple hidden #fileInput>
+                      <div class="image-container mt-2">
+                        <div class="image-preview" *ngFor="let image of imagePreviews; let i = index">
+                          <img [src]="image" class="img-thumbnail">
+                          <button type="button" class="btn btn-danger btn-sm remove-btn" (click)="removeImage(i)">X</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-5">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="question">Câu hỏi</label>
+                        <input type="text" class="form-control" id="question" [(ngModel)]="questionInput" name="questionInput">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label>Các phản hồi</label>
+                      <div class="form-group" *ngFor="let response of responsesInput; let i = index">
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="responsesInput[i]"
+                          name="response{{i}}"
+                          (focus)="onInputFocus(i)"
+                          id="response{{i}}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <label>Số phản hồi cao nhất được chọn</label>
+                      <div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option1" [(ngModel)]="maxResponses" value="1">
+                          <label class="form-check-label" for="option1">Chỉ một</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option2" [(ngModel)]="maxResponses" value="true">
+                          <label class="form-check-label" for="option2">Không giới hạn</label>
+                        </div>
+                        <div class="form-check form-inline">
+                          <input class="form-check-input" type="radio" name="maxResponses" id="option3" [(ngModel)]="maxResponses" value="custom">
+                          <!-- Khi radio button được chọn, cho phép nhập số vào input number bên cạnh. -->
+                          <input type="number" class="w-25 form-control ml-2" id="customNumber" [(ngModel)]="customMaxResponses" name="customMaxResponses" [disabled]="maxResponses !== 'custom'">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <label>Tùy chọn</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check1" [(ngModel)]="changeVote" name="option1">
+                        <label class="form-check-label" for="check1">Cho phép mọi người thay đổi bình chọn của họ</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check2" [(ngModel)]="publicVote" name="option2">
+                        <label class="form-check-label" for="check2">Công khai kết quả vote</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check3" [(ngModel)]="displayVote" name="option3">
+                        <label class="form-check-label" for="check3">Cho phép hiển thị vote dù không có vote</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary mt-5">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+
+          </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

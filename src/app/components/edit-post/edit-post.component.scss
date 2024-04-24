@@ -1,0 +1,95 @@
+.filter-block{
+  background-color: #AFEEEE;
+}
+
+.btn-filter{
+  border: none;
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.btn-filter:hover{
+  background-color: #4169E1;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: flex-end; /* Đẩy nút Filter về bên phải */
+}
+
+.comment-box{
+  background-color: #F5FFFA;
+}
+
+.btn-discuss .btn-poll {
+  text-decoration: none;
+}
+
+.btn-discuss:hover .btn-poll:hover {
+  border: 1px solid #00BFFF;
+}
+
+.btn-discuss .btn-poll .active{
+  border-top: 1px solid #00BFFF;
+  border-left: 1px solid #00BFFF;
+  border-right: 1px solid #00BFFF;
+}
+
+.filter-popup {
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 20px;
+  width: 300px;
+}
+
+.filter-header {
+  font-weight: bold;
+}
+
+.filter-item {
+  margin-top: 15px;
+}
+
+.filter-item label {
+  display: block;
+}
+
+.sort-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-select{
+  margin: 0 10px 0 10px;
+}
+
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 10px;
+}
+
+.image-preview {
+  position: relative;
+  display: flex;
+  flex-basis: calc(25% - 10px);
+  align-items: center;
+  justify-content: center;
+}
+
+.img-thumbnail {
+  width: 100%;
+  height: auto;
+  max-width: 100px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 0.25rem 0.5rem;
+}
+
+

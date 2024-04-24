@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MustMatch } from '../../../password.validator';
-import { SignupRequest } from '../../models/signupRequest';
+import { SignupRequest } from '../../models/SignupRequest';
 import { catchError } from 'rxjs';
 import { LoginComponent } from '../login/login.component';
 import { Router } from '@angular/router';
