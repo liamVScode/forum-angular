@@ -36,92 +36,65 @@
                                         </div>
                                     </div>
                                 </div>
-                                <ul class="users">
-                                    <li class="person" data-chat="person1">
+                                <ul class="users" *ngIf="chats">
+                                    <li class="person" data-chat="person1" *ngFor="let chat of chats">
                                         <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                                            <img src="{{ chat?.messageDto?.slice(-1)[0]?.userDto.avatar }}" alt="Retail Admin">
                                             <span class="status busy"></span>
                                         </div>
                                         <p class="name-time">
-                                            <span class="name">Steve Bangalter</span>
-                                            <span class="time">15/02/2019</span>
+                                            <span class="name">{{ chat?.chatName }}</span>
+                                            <span class="time">{{ chat?.messageDto?.slice(-1)[0]?.createAt }}</span>
                                         </p>
-                                    </li>
-                                    <li class="person" data-chat="person1">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar1.png" alt="Retail Admin">
-                                            <span class="status offline"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Steve Bangalter</span>
-                                            <span class="time">15/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person active-user" data-chat="person2">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar2.png" alt="Retail Admin">
-                                            <span class="status away"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Peter Gregor</span>
-                                            <span class="time">12/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person3">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
-                                            <span class="status busy"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Jessica Larson</span>
-                                            <span class="time">11/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person4">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar4.png" alt="Retail Admin">
-                                            <span class="status offline"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Lisa Guerrero</span>
-                                            <span class="time">08/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person5">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar5.png" alt="Retail Admin">
-                                            <span class="status away"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Michael Jordan</span>
-                                            <span class="time">05/02/2019</span>
-                                        </p>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                          <div *ngIf="!chatExists">
+                              <!-- Form for entering new chat name and selecting chat type -->
+                              <div class="selected-user">
+                                <div class="selected-user">
+                                  <span>To: <span class="name">Emily Russell</span></span>
+                              </div>
+                                  <div class="input-group mb-3">
+                                      <input type="text" class="form-control" placeholder="Enter Chat Name" [(ngModel)]="chatName">
+                                  </div>
+                                  <div class="input-group mb-3">
+                                      <select class="form-control" [(ngModel)]="chatType">
+                                          <option value="0">Riêng tư</option>
+                                          <option value="1">Nhóm</option>
+                                      </select>
+                                  </div>
+                                  <button type="button" class="btn btn-primary" (click)="createChat()">Create Chat</button>
+                              </div>
+                          </div>
+                          <div *ngIf="chatExists">
                             <div class="selected-user">
-                                <span>To: <span class="name">Emily Russell</span></span>
+                              <span> <span class="name">{{ chatName }}</span></span>
                             </div>
-                            <div class="chat-container">
-                                <ul class="chat-box chatContainerScroll" >
-                                    <li class="chat-left" *ngFor="let msg of messageList" [ngClass]="{'chat-left': msg.sendOrReceive === 'receiver',
-                                    'chat-right': msg.sendOrReceive === 'sender'}">
-                                        <div class="chat-avatar">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
-                                            <div class="chat-name">Russell</div>
-                                        </div>
-                                        <div class="chat-text">{{ msg.content }}</div>
-                                        <div class="chat-hour">{{ msg.t_stamp }} <span class="fa fa-check-circle"></span></div>
-                                    </li>
-                                </ul>
-                                <div class="form-group mt-3 mb-0">
-                                    <input type="text" class="form-control" rows="3" placeholder="Type your message here..." [(ngModel)]="messageInput">
-                                </div>
-                                <button (click)="sendMessage()" type="button" class="btn btn-primary" >Gửi</button>
+                            <div class="chat-container" #chatContainer>
+                              <ul class="chat-box chatContainerScroll">
+                                <li class="chat-message" *ngFor="let msg of messageList" [ngClass]="{'chat-left': msg.sendOrReceive === 'receiver', 'chat-right': msg.sendOrReceive === 'sender'}">
+                                  <div class="chat-avatar">
+                                    <img src="{{ msg.userDto?.avatar }}" alt="Avatar">
+                                    <div class="chat-name">{{ msg.userDto?.firstName }} {{ msg.userDto?.lastName }}</div>
+                                  </div>
+                                  <div class="chat-text">{{ msg.messageContent }}</div>
+                                  <div class="chat-hour">{{ msg.createAt }} <span class="fa fa-check-circle"></span></div>
+                                </li>
+                              </ul>
                             </div>
-                        </div>
+                            <div class="message-input-container">
+                              <input type="text" class="form-control message-input" placeholder="Type your message here..." [(ngModel)]="messageInput">
+                              <button type="button" class="btn btn-primary send-button" (click)="sendMessage()">Send</button>
+                            </div>
+                          </div>
+
+
+
+
+                      </div>
+
                     </div>
                     <!-- Row end -->
                 </div>

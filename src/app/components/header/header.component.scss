@@ -1,7 +1,10 @@
 header{
   background-color: #191970; padding: 20px 0;
   position: sticky;
+  width: 100%;
   top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 .nav-container {
@@ -64,6 +67,36 @@ header{
 
 .navbar .nav-links .nav-link:hover, .navbar .nav-links .nav-link.selected {
     color: #007bff; /* Màu khi hover hoặc được chọn */
+}
+
+
+.dropdown-menu {
+  max-width: 300px; // Giới hạn chiều rộng
+  .dropdown-item {
+    display: block;
+    white-space: normal; // Cho phép nội dung xuống dòng
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    .notification-content {
+      max-height: 4.5em; // Giới hạn chiều cao, tùy chỉnh theo nhu cầu
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3; // Giới hạn số dòng hiển thị
+      -webkit-box-orient: vertical;
+    }
+    .notification-time {
+      font-size: 0.75em; // Phông nhỏ hơn
+      color: #6c757d; // Màu nhạt
+    }
+  }
+
+
+}
+.notification-dropdown {
+  max-height: 700px; /* Chiều cao tối đa của danh sách */
+  overflow-y: auto;  /* Cho phép cuộn dọc */
 }
 
 

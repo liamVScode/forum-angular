@@ -120,8 +120,8 @@
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <div class="form-group" *ngFor="let response of responsesInput; let i = index">
-                        <label for="response{{i}}">Các phản hồi</label>
+                      <label>Các phản hồi</label>
+                      <div class="form-group" *ngFor="let response of responsesInput; let i = index; trackBy: trackByFn">
                         <input
                           type="text"
                           class="form-control"
@@ -189,16 +189,49 @@
                 <div *ngFor="let post of postList?.result?.content" class="row mb-2 align-items-center post-row">
                     <!-- Column 1: Avatar as a button link -->
                     <div class="col-md-1">
-                        <button (click)="router.navigate(['/user', post.user.id])" class="btn btn-link p-0">
-                            <img src="{{ post.user.avatar }}" alt="Avatar" class="img-fluid rounded-circle">
-                        </button>
+                      <div class="avatar-container" (mouseenter)="showOverlay = true" (mouseleave)="showOverlay = false">
+                        <div class="avatar-wrapper">
+                          <button class="avatar-button"   (click)="router.navigate(['/user-profile', post?.user?.userId])">
+                            <img src="{{ post?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                          </button>
+                          <div class="overlay" *ngIf="showOverlay">
+                            <div class="fixed-size-container">
+                              <div class="avatar">
+                                <!-- Avatar -->
+                                <img src="{{ post?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                              </div>
+                              <div class="user-info">
+                                <!-- Tên người dùng -->
+                                <h5>{{ post?.user?.firstName }} {{ post?.user?.lastName }}</h5>
+                                <!-- Thông tin người dùng -->
+                                <p>{{ post?.user?.about }}</p>
+                              </div>
+                              <div class="stats">
+                                <!-- Số liệu -->
+                                <div class="stat">
+                                  <h6>Bình luận</h6>
+                                  <p>1</p>
+                                </div>
+                                <div class="stat">
+                                  <h6>Like</h6>
+                                  <p>2</p>
+                                </div>
+                                <div class="stat">
+                                  <h6>Bài viết</h6>
+                                  <p>3</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <!-- Column 2: Prefix and Title where Title is a button link -->
                     <div class="col-md-6">
                         <div class="d-flex align-items-start">
                             <span class="badge bg-secondary">{{ post?.prefix?.prefixName }}</span>
                             <div class="flex-grow-1 ms-2">
-                              <button (click)="router.navigate(['/category', post.category.categoryId, 'detail-post', post.postId])" class="btn btn-link text-start p-0 text-wrap" style="white-space: normal;">
+                              <button (click)="router.navigate(['/category', post.category.categoryId, 'detail-post', post.postId, 'page', '1'])" class="btn btn-link text-start p-0 text-wrap" style="white-space: normal;">
                                 {{ post?.title }}
                             </button>
 
@@ -227,15 +260,46 @@
                     </div>
                     <!-- Column 5: Last replier's avatar as a button link -->
                     <div class="col-md-1">
-                        <button (click)="router.navigate(['/user', post.commentDto[post.commentDto.length - 1]?.user?.id])" class="btn btn-link p-0">
+                      <div class="avatar-container" (mouseenter)="showOverlay = true" (mouseleave)="showOverlay = false">
+                        <div class="avatar-wrapper">
+                          <button (click)="router.navigate(['/user', post.commentDto[post.commentDto.length - 1]?.user?.userId])" class="btn btn-link p-0">
                             <img src="{{ post.commentDto[post.commentDto.length - 1]?.user?.avatar }}" alt="Avatar" class="img-fluid rounded-circle">
                         </button>
+                          <div class="overlay" *ngIf="showOverlay">
+                            <div class="fixed-size-container">
+                              <div class="avatar">
+                                <!-- Avatar -->
+                                <img src="{{ post.commentDto[post.commentDto.length - 1]?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                              </div>
+                              <div class="user-info">
+                                <!-- Tên người dùng -->
+                                <h5>{{ post.commentDto[post.commentDto.length - 1]?.user?.firstName }} {{ post.commentDto[post.commentDto.length - 1]?.user?.lastName }}</h5>
+                                <!-- Thông tin người dùng -->
+                                <p>{{ post.commentDto[post.commentDto.length - 1]?.user?.about }}</p>
+                              </div>
+                              <div class="stats">
+                                <!-- Số liệu -->
+                                <div class="stat">
+                                  <h6>Bình luận</h6>
+                                  <p>1</p>
+                                </div>
+                                <div class="stat">
+                                  <h6>Like</h6>
+                                  <p>2</p>
+                                </div>
+                                <div class="stat">
+                                  <h6>Bài viết</h6>
+                                  <p>3</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -305,8 +369,8 @@
             <label for="postTypeSelect" class="form-label">Loại bài viết:</label>
             <select class="form-select" id="postTypeSelect" [(ngModel)]="postTypeFilter" name="postTypeSelect">
               <option value="">Bất kỳ</option>
-              <option value="Discussion">Thảo luận</option>
-              <option value="Poll">Thăm dò</option>
+              <option value="0">Thảo luận</option>
+              <option value="1">Thăm dò</option>
             </select>
           </div>
 

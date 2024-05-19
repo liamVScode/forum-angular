@@ -1,47 +1,83 @@
-<div class="nav-container">
-  <nav class="navbar">
-      <ul class="nav-links">
-          <li class="nav-item"><button class="nav-link" id="new-posts">Bài viết mới</button></li>
-          <li class="nav-item"><button class="nav-link" id="latest">Mới nhất</button></li>
-      </ul>
-  </nav>
-</div>
+
 <div class="container">
   <div class="row">
-      <div class="col-12 col-md-8">
-          <div class="p-3 topic-header">Tên Topic</div>
-          <div class="card mb-5 category-header">
+      <div *ngIf="infoList" class="col-12 col-md-8">
+        <div *ngFor="let info of infoList" class="mb-5">
+          <div class="p-3 topic-header">{{ info?.topicDto?.topicName }}</div>
+          <div *ngFor="let categoryInfo of info?.categoryForumInfos" class="card category-header">
               <div class="card-body">
                   <div class="row">
                       <div class="col-md-4 d-flex align-items-center">
                         <i class="fa-sharp fa-regular fa-comments large-icon"></i>
-                        <button class="btn btn-link category-name">Tên Category</button>
+                        <button (click)="router.navigate(['/category', categoryInfo?.categoryDto?.categoryId, 'page', '1'])" class="btn btn-link category-name">{{ categoryInfo?.categoryDto?.categoryName }}</button>
                       </div>
                       <!-- Điều chỉnh ở đây: Phân chia thành 2 cột cho số bài viết và số bình luận -->
                       <div class="col-md-4 d-flex justify-content-around">
                         <div>
                           <dl>
                             <dt class="stats-text">Bài viết</dt>
-                            <dd class="stats-number">10</dd> <!-- Sử dụng <dd> thay vì <dt> thứ hai -->
+                            <dd class="stats-number">{{ categoryInfo?.numberOfPost }}</dd> <!-- Sử dụng <dd> thay vì <dt> thứ hai -->
                           </dl>
                         </div>
                         <div>
                           <dl>
                             <dt class="stats-text">Bình luận</dt>
-                            <dd class="stats-number">20</dd> <!-- Sử dụng <dd> thay vì <dt> thứ hai -->
+                            <dd class="stats-number">{{ categoryInfo?.numberOfComment }}</dd> <!-- Sử dụng <dd> thay vì <dt> thứ hai -->
                           </dl>
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      <div *ngIf="categoryInfo?.postDto" class="col-md-4">
                           <div class="row align-items-center">
                               <div class="col-2">
-                                  <img src="path_to_avatar.png" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%;">
+                                <div class="avatar-container" (mouseenter)="showOverlay = true" (mouseleave)="showOverlay = false">
+                                  <div class="avatar-wrapper">
+                                    <button class="avatar-button"   (click)="router.navigate(['/user-profile', categoryInfo?.postDto.user?.userId])">
+                                      <img src="{{ categoryInfo?.postDto?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                                    </button>
+                                    <div class="overlay" *ngIf="showOverlay">
+                                      <div class="fixed-size-container">
+                                        <div class="avatar">
+                                          <!-- Avatar -->
+                                          <img src="{{ categoryInfo?.postDto?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                                        </div>
+                                        <div class="user-info">
+                                          <!-- Tên người dùng -->
+                                          <h5>{{ categoryInfo?.postDto?.user?.firstName }} {{ categoryInfo?.postDto?.user?.lastName }}</h5>
+                                          <!-- Thông tin người dùng -->
+                                          <p>{{ categoryInfo?.postDto?.user?.about }}</p>
+                                        </div>
+                                        <div class="stats">
+                                          <!-- Số liệu -->
+                                          <div class="stat">
+                                            <h6>Bình luận</h6>
+                                            <p>1</p>
+                                          </div>
+                                          <div class="stat">
+                                            <h6>Like</h6>
+                                            <p>2</p>
+                                          </div>
+                                          <div class="stat">
+                                            <h6>Bài viết</h6>
+                                            <p>3</p>
+                                          </div>
+                                        </div>
+                                      </div>
+
+
+
+                                    </div>
+                                  </div>
+                                </div>
+
+
+
+
                               </div>
                               <div class="col-10">
-                                  <button class="btn btn-link post-title">Tên bài viết quá dài sẽ hiển thị</button>
+                                  <button (click)="router.navigate(['/category', categoryInfo?.categoryId, 'detail-post', categoryInfo?.postDto?.postId, 'page', '1'])" class="btn btn-link post-title">{{ categoryInfo?.postDto?.title }}</button>
                                   <div class="d-flex justify-content-between">
-                                      <button class="btn btn-link post-author">Đăng bởi: Tên người dùng</button>
-                                      <button class="btn btn-link post-info">2 giờ trước</button>
+                                      <button (click)="router.navigate(['/user-profile', categoryInfo?.postDto?.user?.userId])" class="btn btn-link post-author">{{ categoryInfo?.postDto?.user?.firstName }} {{ categoryInfo?.postDto?.user?.lastName }}</button>
+                                      <button class="btn btn-link post-info">{{ categoryInfo?.postDto?.createAt | timeAgo }}</button>
                                   </div>
                               </div>
                           </div>
@@ -49,6 +85,7 @@
                   </div>
               </div>
           </div>
+        </div>
           <!-- Thêm các card khác cho các category tương tự ở đây -->
       </div>
 
@@ -56,25 +93,78 @@
       <div class="col-12 col-md-4">
         <button class="btn btn-link lastest">BÀI VIẾT MỚI NHẤT</button>
         <!-- Card bài viết mới -->
-        <div class="card mb-3">
-          <div class="row no-gutters">
-            <div class="col-2">
-              <!-- Ảnh bài viết -->
-              <button class="btn btn-link btn-img">
-                <img src="path_to_image.jpg" class="img-fluid" alt="Ảnh bài viết">
-              </button>
-            </div>
-            <div class="col-10">
+        <div *ngIf="posts" class="card">
+          <div *ngFor="let post of posts" class="row no-gutters">
+            <div class="col-12">
               <div class="card-body">
-                <!-- Tên bài viết -->
-                <button class="btn btn-link card-title">Tên bài viết aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</button>
-                <!-- Tác giả và thời gian -->
-                <p class="card-text"><small class="text-muted">Tác giả - Thời gian</small></p>
-                <!-- Tên category -->
-                <p class="card-text">Tên Category</p>
+                <!-- Avatar -->
+                <div class="row align-items-center">
+                  <div class="col-2">
+                    <div class="avatar-container" (mouseenter)="showOverlay = true" (mouseleave)="showOverlay = false">
+                      <div class="avatar-wrapper">
+                        <button class="avatar-button"   (click)="router.navigate(['/user-profile', post?.user?.userId])">
+                          <img src="{{ post?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                        </button>
+                        <div class="overlay" *ngIf="showOverlay">
+                          <div class="fixed-size-container">
+                            <div class="avatar">
+                              <!-- Avatar -->
+                              <img src="{{ post?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                            </div>
+                            <div class="user-info">
+                              <!-- Tên người dùng -->
+                              <h5>{{ post?.user?.firstName }} {{ post?.user?.lastName }}</h5>
+                              <!-- Thông tin người dùng -->
+                              <p>{{ post?.user?.about }}</p>
+                            </div>
+                            <div class="stats">
+                              <!-- Số liệu -->
+                              <div class="stat">
+                                <h6>Bình luận</h6>
+                                <p>1</p>
+                              </div>
+                              <div class="stat">
+                                <h6>Like</h6>
+                                <p>2</p>
+                              </div>
+                              <div class="stat">
+                                <h6>Bài viết</h6>
+                                <p>3</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-10">
+                    <!-- Tên bài viết -->
+                    <button (click)="router.navigate(['/category', post.category.categoryId, 'detail-post', post.postId, 'page', '1'])" class="btn btn-link card-title">{{ post?.title }}</button>
+                    <!-- Tên tác giả và thời gian -->
+                    <div class="card-text">
+                      <button class="btn btn-link">{{ post?.user?.firstName }} {{ post?.user?.lastName }}</button><span> - {{ post?.createAt | timeAgo }}</span>
+                    </div>
+                    <!-- Tên category -->
+                    <p class="card-text">{{ post?.category?.categoryName }}</p>
+                  </div>
+                </div>
+                <hr class="card-divider">
               </div>
             </div>
+
           </div>
         </div>
-  </div>
+        <div class="card mt-3">
+          <div class="card-body">
+            <h5 class="card-title">Thống kê diễn đàn</h5>
+            <hr class="card-divider">
+            <p class="card-text">Bài viết: {{ numberOfPost }}</p>
+            <p class="card-text">Bình luận: {{ numberOfComment }}</p>
+            <p class="card-text">Thành viên: {{ numberOfUser }}</p>
+            <p class="card-text">Thành viên online: {{ numberOfOnlineUser }}</p>
+          </div>
+        </div>
+      </div>
+
+
 </div>

@@ -1,0 +1,37 @@
+.table-row {
+  position: relative; /* Đặt vị trí của dòng dữ liệu */
+}
+
+.button-container {
+  display: none; /* Mặc định ẩn khung chứa các button */
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  top: 0; /* Đặt top là 0 để nằm trên cùng của dòng */
+  right: 0; /* Đặt right là 0 để nằm bên phải của dòng */
+}
+
+.table-row:hover .button-container {
+  display: block; /* Hiển thị khung chứa các button khi hover vào dòng */
+}
+
+.button-container button {
+  margin-right: 5px; /* Khoảng cách giữa các button */
+}
+
+.filter-block{
+  background-color: #AFEEEE;
+}
+
+.btn-filter{
+  border: none;
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.btn-filter:hover{
+  background-color: #4169E1;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: flex-end; /* Đẩy nút Filter về bên phải */
+}

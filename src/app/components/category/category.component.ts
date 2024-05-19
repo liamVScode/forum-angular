@@ -62,6 +62,8 @@ export class CategoryComponent implements OnInit{
   isFilter: boolean = false;
   activeFilters: Array<{ key: string, label: string, value: any }> = [];
 
+  showOverlay : boolean = false;
+
   constructor(private authService: AuthService, private postService: PostService, private filterService: FilterService, private route: ActivatedRoute, public router: Router){
 
   }
@@ -71,8 +73,9 @@ export class CategoryComponent implements OnInit{
       this.currentUser = this.authService.getCurrentUser();
     });
     this.categoryId = this.route.snapshot.params['categoryId'];
+    this.currentPage =this.route.snapshot.params['page'];
     this.getTopicAndPrefix();
-    this.allPostByCategory();
+    this.allPostByCategory(this.currentPage.toString());
   }
 
 
@@ -89,6 +92,11 @@ export class CategoryComponent implements OnInit{
       this.addResponses();
     }
   }
+
+  trackByFn(index: any, item: any) {
+    return index;
+  }
+
 
   handleButtonClick(buttonNumber: number){
     this.selectedButton = buttonNumber;
@@ -130,7 +138,7 @@ export class CategoryComponent implements OnInit{
     if (this.maxResponses === 'custom') {
         finalMaxResponse = this.customMaxResponses;
     } else if (this.maxResponses === 'true') {
-        finalMaxResponse = 0;
+      finalMaxResponse = Number.MAX_SAFE_INTEGER;
         this.isUnlimited = true;
     } else {
         finalMaxResponse = 1;
@@ -150,6 +158,7 @@ export class CategoryComponent implements OnInit{
       });
     }
 
+    const nonEmptyResponses = this.responsesInput.filter(response => response.trim() !== '');
     // Append poll related data only if poll data is available
     if (this.questionInput && this.responsesInput.length > 0) {
       formData.append('pollQuestion', this.questionInput);
@@ -157,13 +166,15 @@ export class CategoryComponent implements OnInit{
       formData.append('isUnlimited', this.isUnlimited.toString());
       formData.append('changeVote', this.changeVote.toString());
       formData.append('viewResultNoVote', this.displayVote.toString());
-      formData.append('pollResponses', JSON.stringify(this.responsesInput));
+      nonEmptyResponses.forEach((response, index) => {
+        formData.append(`pollResponses[${index}]`, response);
+      });
     }
 
     this.postService.createPost(formData).subscribe({
       next: (response) => {
         console.log('Post created:', response);
-        this.router.navigate(['category', response.result.categoryDto.categoryId ,'detail-post', response.result.postId]);
+        this.router.navigate(['category', response.result.categoryDto.categoryId ,'detail-post', response.result.postId, 'page', '1']);
       },
       error: (error) => {
         console.error('Error creating post:', error);
@@ -173,8 +184,7 @@ export class CategoryComponent implements OnInit{
 
 
   filterPost(page?: string){
-
-    const isFilterEmpty = !this.prefixIdFilter && !this.searchKeyword && !this.updateTimeFilter && !this.postTypeFilter;
+    const isFilterEmpty = !this.prefixIdFilter && !this.searchKeyword && !this.updateTimeFilter && !this.postTypeFilter && !this.sortField;
     if (isFilterEmpty) {
         this.isFilter = false;
         this.allPostByCategory(page);
@@ -188,6 +198,8 @@ export class CategoryComponent implements OnInit{
        this.sortField, this.sortOrder, pageNumber).subscribe({
       next: (response) => {
         this.postList = response;
+        console.log(this.postList.result.content);
+
         this.currentPage = this.postList?.result?.pageable?.pageNumber + 1;
         this.totalPages = this.postList?.result?.totalPages;
         this.totalElements = this.postList.result?.totalElements;
@@ -262,6 +274,8 @@ export class CategoryComponent implements OnInit{
       return;
     }
     this.currentPage = Number(page);
+
+    this.router.navigate(['/category', this.categoryId, 'page', this.currentPage]);
 
     if (this.isFilter) {
       this.filterPost(page.toString());

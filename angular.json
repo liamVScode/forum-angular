@@ -59,6 +59,11 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "ssl": true,
+            "sslKey": "localhost.key",
+            "sslCert": "localhost.crt"
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -69,6 +74,7 @@
             }
           },
           "defaultConfiguration": "development"
+
 
         },
         "extract-i18n": {

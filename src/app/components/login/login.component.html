@@ -50,10 +50,14 @@
 					</div>
 
 					<div class="text-right p-t-8 p-b-31">
-						<a href="/forget-password">
+						<button (click)="router.navigate(['/forget-password'])">
 							Quên mật khẩu?
-						</a>
+						</button>
 					</div>
+
+          <input type="checkbox" id="isAdmin" [(ngModel)]="isAdmin" name="isAdmin">
+          <label for="isAdmin">Admin</label>
+
 
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
@@ -71,11 +75,11 @@
 					</div>
 
 					<div class="flex-c-m">
-						<a href="#" class="login100-social-item bg1" (click)="loginWithFacebook()">
+						<a class="login100-social-item bg1" (click)="loginWithFacebook()">
 							<i class="fa fa-facebook"></i>
 						</a>
 
-						<a href="#" class="login100-social-item bg2">
+						<a class="login100-social-item bg2">
 							<i class="fa fa-twitter"></i>
 						</a>
 

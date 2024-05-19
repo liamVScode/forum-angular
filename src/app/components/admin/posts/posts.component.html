@@ -1,0 +1,214 @@
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Bài viết</h1>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Tất cả bài viết</h6>
+      <button class="btn btn-primary">Thêm mới</button>
+    </div>
+    <div class="card-body">
+      <!-- Trigger/Button to Open Modal -->
+
+      <div class="table-responsive">
+        <div class="filter-chips d-flex align-items-center">
+          <div *ngFor="let filter of activeFilters" class="filter-chip btn btn-sm btn-outline-secondary mr-2">
+            {{ filter.label }}: {{ filter.value }}
+            <button type="button" class="btn-close ms-2" aria-label="Close" (click)="removeFilter(filter.key)"></button>
+          </div>
+        </div>
+        <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div id="dataTable_filter" class="dataTables_filter"><label><button type="button"
+                    class="btn btn-link btn-filter" data-bs-toggle="modal" data-bs-target="#filterModal">
+                    Filters
+                  </button></label></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
+                aria-describedby="dataTable_info" style="width: 100%;">
+                <thead>
+                  <tr role="row">
+                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-sort="ascending" aria-label="Name: activate to sort column descending"
+                      style="width: 197.141px;">Tiêu đề</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Position: activate to sort column ascending" style="width: 319.281px;">Tạo</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Office: activate to sort column ascending" style="width: 142.234px;">Cập nhật</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Age: activate to sort column ascending" style="width: 66.8906px;">Người tạo</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Start date: activate to sort column ascending" style="width: 134.531px;">Tiền tố</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Salary: activate to sort column ascending" style="width: 120.922px;">Mục</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Salary: activate to sort column ascending" style="width: 120.922px;">Bị khóa</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Salary: activate to sort column ascending" style="width: 120.922px;">Thăm dò</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let post of posts" class="table-row" (mouseenter)="showButtons = true"
+                    (mouseleave)="showButtons = false">
+                    <td>{{ post?.title }}</td>
+                    <td>{{ post?.createAt }}</td>
+                    <td>{{ post?.updateAt }}</td>
+                    <td>{{ post?.user?.lastName }}</td>
+                    <td>{{ post?.prefix?.prefixName === "" ? "Không có" : post?.prefix?.prefixName }}</td>
+                    <td>{{ post?.category?.categoryName }}</td>
+                    <td>{{ post?.locked === false ? "Không" : "Có" }}</td>
+                    <td>{{ post?.poll === null ? "Không" : "Có" }}</td>
+                    <td *ngIf="showButtons">
+                      <div class="button-container">
+                        <button data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" class="btn btn-danger"
+                          (click)="openDeleteModal(post?.postId)">Xóa</button>
+                        <button *ngIf="post.locked === false; else unlockButton" (click)="lockPost(post?.postId)"
+                          class="btn btn-warning">Khóa</button>
+                        <ng-template #unlockButton>
+                          <button (click)="unlockPost(post?.postId)" class="btn btn-warning">Mở khóa</button>
+                        </ng-template>
+                        <button (click)="detailPost(post?.postId)" class="btn btn-info">Chi tiết</button>
+                      </div>
+
+                    </td>
+
+                  </tr>
+                </tbody>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteConfirmationModal" tabindex="-1"
+                  aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true" #deleteModal>
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteConfirmationModalLabel">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa bài viết này không?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                        <button type="button" class="btn btn-danger" (click)="deletePost()">Xóa bài</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-5">
+              <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Hiển thị từ {{
+                calculateStartIndex() }} đến {{ calculateEndIndex() }} trong {{ totalElements }} mục</div>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" *ngIf="currentPage !== 1">
+                  <button class="page-link" aria-label="Previous" (click)="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li class="page-item" *ngFor="let page of pagesToShow()" [class.active]="page === currentPage">
+                  <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+                </li>
+                <li class="page-item" *ngIf="currentPage !== totalPages">
+                  <button class="page-link" aria-label="Next" (click)="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Modal Popup Menu -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="filterModalLabel">Lọc</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Form trong Modal -->
+            <form>
+              <!-- Khung Prefix -->
+              <div class="mb-3">
+                <label for="prefixSelect" class="form-label">Prefix:</label>
+                <select class="form-select" id="prefixSelect" [(ngModel)]="prefixIdFilter" name="prefixSelect">
+                  <option value="">Bất kỳ</option>
+                  <option *ngFor="let prefix of prefixes" [value]="prefix.prefixId">
+                    {{ prefix.prefixName }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Khung Tìm kiếm -->
+              <div class="mb-3">
+                <label for="searchInput" class="form-label">Từ khóa:</label>
+                <input type="text" class="form-control" id="searchInput" [(ngModel)]="searchKeyword" name="searchInput"
+                  placeholder="Nhập từ khóa...">
+              </div>
+
+              <!-- Khung Thời gian cập nhật -->
+              <div class="mb-3">
+                <label for="updateTimeSelect" class="form-label">Thời gian cập nhật:</label>
+                <select class="form-select" id="updateTimeSelect" [(ngModel)]="updateTimeFilter"
+                  name="updateTimeSelect">
+                  <option value="">Bất kỳ</option>
+                  <option value="1">1 ngày trước</option>
+                  <option value="7">7 ngày trước</option>
+                  <option value="14">14 ngày trước</option>
+                  <option value="30">30 ngày trước</option>
+                  <option value="180">6 tháng trước</option>
+                </select>
+              </div>
+
+              <!-- Khung Loại bài viết -->
+              <div class="mb-3">
+                <label for="postTypeSelect" class="form-label">Loại bài viết:</label>
+                <select class="form-select" id="postTypeSelect" [(ngModel)]="postTypeFilter" name="postTypeSelect">
+                  <option value="">Bất kỳ</option>
+                  <option value="0">Thảo luận</option>
+                  <option value="1">Thăm dò</option>
+                </select>
+              </div>
+
+              <!-- Khung Sắp xếp -->
+              <div class="mb-3">
+                <label for="sortMethod" class="form-label">Sắp xếp:</label>
+                <div class="d-flex justify-content-between">
+                  <select class="form-select w-49" id="sortField" [(ngModel)]="sortField" name="sortField">
+                    <option value="">Bất kỳ</option>
+                    <option value="viewCount">Views</option>
+                    <option value="commentCount">Lượng Bình luận</option>
+                    <option value="title">Tiêu đề</option>
+                  </select>
+                  <select class="form-select w-49" id="sortOrder" [(ngModel)]="sortOrder" name="sortOrder">
+                    <option value="">Bất kỳ</option>
+                    <option value="asc">Tăng dần</option>
+                    <option value="desc">Giảm dần</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" (click)="filterPost()">Áp dụng</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>

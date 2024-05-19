@@ -12,19 +12,19 @@ import { CommentRequest } from '../models/CommentRequest';
 })
 export class PostService{
 
-  private urlBe: string = "http://localhost:3000";
+  private urlBe: string = "https://localhost:3000/api/posts";
 
   constructor(private http: HttpClient) { }
 
 
   getPostDetails(postId: string) {
     let params = new HttpParams().set('postId', postId);
-    return this.http.get(`${this.urlBe}/api/posts/detail-post`, { params });
+    return this.http.get(`${this.urlBe}/detail-post`, { params });
   }
 
   getTopicAndPrefix(categoryId: string){
     let params = new HttpParams().set('categoryId', categoryId);
-    return this.http.get(`${this.urlBe}/api/posts/topic-prefix`, {params})
+    return this.http.get(`${this.urlBe}/topic-prefix`, {params})
   }
 
   getAllPostByCategory(categoryId: string, page?: string, size?: string){
@@ -32,24 +32,20 @@ export class PostService{
     params = params.set('categoryId', categoryId);
     params = params.set('page', page || '0');
     params = params.set('size', size || '10');
-    return this.http.get(`${this.urlBe}/api/posts/all-post`, {params});
+    return this.http.get(`${this.urlBe}/all-post`, {params});
   }
 
   createPost(createPost: FormData){
-    return this.http.post<CreatePostResponse>(`${this.urlBe}/api/posts/create-post`, createPost);
+    return this.http.post<CreatePostResponse>(`${this.urlBe}/create-post`, createPost);
   }
 
   editPost(editPost : FormData){
-    return this.http.put<EditPostResponse>(`${this.urlBe}/api/posts/edit-post`, editPost);
+    return this.http.put<EditPostResponse>(`${this.urlBe}/edit-post`, editPost);
   }
 
   deletePost(deletePost: string){
     const params = new HttpParams().set('postId', deletePost);
-    return this.http.delete(`${this.urlBe}/api/posts/delete-post`, {params});
-  }
-
-  createComment(commentRequest: FormData){
-    return this.http.post<CommentResponse>(`${this.urlBe}/api/posts/create-comment`, commentRequest);
+    return this.http.post(`${this.urlBe}/delete-post`, null, {params});
   }
 
 }

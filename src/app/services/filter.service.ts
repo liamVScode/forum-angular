@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class FilterService {
 
 
-  private urlBe: string = "http://localhost:3000/api/posts";
+  private urlBe: string = "https://localhost:3000/api/posts";
 
   constructor(private http: HttpClient)
   {}
@@ -25,7 +25,7 @@ export class FilterService {
       .set('prefixId', prefixId || '')
       .set('searchKeyword', searchKeyword || '')
       .set('updateTime', updateTime || '')
-      .set('hasPoll', postType || '')
+      .set('postType', postType || '')
       .set('sortField', sortField || '')
       .set('sortOrder', sortOrder || '')
       .set('page', page || '0');

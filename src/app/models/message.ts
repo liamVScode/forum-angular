@@ -1,7 +1,9 @@
+import { UserDto } from "./UserDto";
+
 export interface Message {
-  msgId: number;
+  msgId: string;
   content: string;
-  userId: string;
-  chatId: number;
+  userDto: UserDto;
+  chatId: string;
   t_stamp: string;
 }

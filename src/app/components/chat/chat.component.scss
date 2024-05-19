@@ -377,3 +377,9 @@ ul {
     margin-bottom: 2rem;
     box-shadow: none;
 }
+
+.message-input {
+  flex: 1;
+  margin-bottom: 10px; /* Khoảng cách giữa input và nút send */
+}
+

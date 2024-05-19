@@ -121,3 +121,79 @@
 }
 
 
+.avatar-button {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.avatar-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 100%; /* Đặt vị trí ngay phía trên avatar */
+  left: 0;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+}
+
+.avatar-container:hover .overlay {
+  display: block;
+}
+
+.fixed-size-container {
+  width: 400px; /* Kích thước cố định của khung */
+  height: 200px; /* Kích thước cố định của khung */
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.avatar {
+  float: left;
+  width: 80px; /* Kích thước cố định của hình ảnh avatar */
+  height: 80px; /* Kích thước cố định của hình ảnh avatar */
+  margin-right: 20px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%; /* Đảm bảo avatar là hình tròn */
+}
+
+.user-info {
+  overflow: hidden; /* Đảm bảo chiều rộng của phần thông tin người dùng không vượt quá phần còn lại của khung */
+  margin-bottom: 20px;
+}
+
+.stats {
+  overflow: hidden; /* Đảm bảo chiều rộng của phần số liệu không vượt quá phần còn lại của khung */
+}
+
+.stat {
+  float: left;
+  width: 100px; /* Kích thước cố định của mỗi số liệu */
+  margin-right: 20px;
+}
+
+.stat h6 {
+  margin-top: 0;
+}
+

@@ -1,0 +1,151 @@
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Bài viết</h1>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Tất cả danh mục</h6>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Thêm mới</button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
+                aria-describedby="dataTable_info" style="width: 100%;">
+                <thead>
+                  <tr role="row">
+                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-sort="ascending" aria-label="Name: activate to sort column descending"
+                      style="width: 197.141px;">Mã</th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Position: activate to sort column ascending" style="width: 319.281px;">Tên danh mục
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                      aria-label="Office: activate to sort column ascending" style="width: 142.234px;">Chủ đề</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let category of categories" class="table-row" (mouseenter)="showButtons = true"
+                    (mouseleave)="showButtons = false">
+                    <td>{{ category?.categoryId }}</td>
+                    <td>{{ category?.categoryName }}</td>
+                    <td>{{ category?.topicDto?.topicName }}</td>
+                    <td *ngIf="showButtons">
+                      <div class="button-container">
+                        <button (click)="openEditModal(category)" data-bs-toggle="modal" data-bs-target="#editModal"
+                          class="btn btn-primary">Sửa</button>
+                        <button data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" class="btn btn-danger"
+                          (click)="openDeleteModal(category.categoryId)">Xóa</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <!-- Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true" #deleteModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa bài viết này không?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-danger" (click)="deleteCategory()">Xóa bài</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" #editModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Sửa danh mục</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="categoryId">ID danh mục</label>
+          <input type="text" class="form-control" id="categoryId" [(ngModel)]="editedCategory.categoryId" readonly>
+        </div>
+        <div class="form-group">
+          <label for="categoryName">Tên danh mục</label>
+          <input type="text" class="form-control" id="categoryName" [(ngModel)]="editedCategory.categoryName">
+        </div>
+        <div class="form-group">
+          <label for="topicSelect">Chủ đề</label>
+          <select class="form-control" id="topicSelect" *ngIf="editedCategory?.topicDto" [(ngModel)]="editedCategory.topicDto.topicId">
+            <option *ngFor="let topic of topics" [value]="topic.topicId">{{ topic.topicName }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-primary" (click)="saveChanges()">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true" #addModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Thêm mới danh mục</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="categoryName">Tên danh mục</label>
+          <input type="text" class="form-control" id="categoryName" [(ngModel)]="newCategoryName">
+        </div>
+        <div class="form-group">
+          <label for="topicSelect">Chủ đề</label>
+          <select class="form-control" id="topicSelect" [(ngModel)]="newTopicId">
+            <option *ngFor="let topic of topics" [value]="topic.topicId">{{ topic.topicName }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-primary" (click)="addCategory()">Thêm mới</button>
+      </div>
+    </div>
+  </div>
+</div>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-5">
+              <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Hiển thị từ {{
+                calculateStartIndex() }} đến {{ calculateEndIndex() }} trong {{ totalElements }} mục</div>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" *ngIf="currentPage !== 1">
+                  <button class="page-link" aria-label="Previous" (click)="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li class="page-item" *ngFor="let page of pagesToShow()" [class.active]="page === currentPage">
+                  <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+                </li>
+                <li class="page-item" *ngIf="currentPage !== totalPages">
+                  <button class="page-link" aria-label="Next" (click)="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>

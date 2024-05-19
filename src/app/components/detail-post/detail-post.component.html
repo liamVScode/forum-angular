@@ -2,16 +2,16 @@
   <div class="button-links mb-3">
     <button class="btn btn-link" (click)="router.navigate(['forum'])">Forums</button>
     <span class="separator">></span>
-    <button class="btn btn-link" (click)="router.navigate(['forum'])">{{ topicPrefix.result.topic.topicName }}</button>
+    <button class="btn btn-link" (click)="router.navigate(['forum'])">{{ topicPrefix?.result?.topic?.topicName }}</button>
     <span class="separator">></span>
-    <button class="btn btn-link" (click)="router.navigate(['/category', postDetail.result.category.categoryId])">{{ postDetail.result.category.categoryName }}</button>
+    <button class="btn btn-link" (click)="router.navigate(['/category', postDetail.result.category.categoryId])">{{ postDetail?.result?.category?.categoryName }}</button>
 </div>
   <div *ngIf="postDetail" class="row">
     <div class="col-12 col-md-8">
         <div class="post-header d-flex align-items-center">
             <!-- Chỉ hiển thị prefix nếu tồn tại -->
-            <span *ngIf="postDetail.result.prefix" class="prefix badge bg-secondary me-2">{{ postDetail.result.prefix.prefixName }}</span>
-            <h2 class="post-title m-0">{{ postDetail.result.title }}</h2>
+            <span *ngIf="postDetail?.result?.prefix" class="prefix badge bg-secondary me-2">{{ postDetail?.result?.prefix?.prefixName }}</span>
+            <h2 class="post-title m-0">{{ postDetail?.result?.title }}</h2>
         </div>
     </div>
   </div>
@@ -24,7 +24,7 @@
       </div>
       <div class="col-auto text-white">
         <!-- Tên tác giả -->
-        {{ postDetail.result.user.firstName }} {{ postDetail.result.user.lastName }}
+        {{ postDetail?.result?.user?.firstName }} {{ postDetail?.result?.user?.lastName }}
       </div>
       <div class="col-auto">
         <!-- Icon thời gian (ví dụ: icon đồng hồ) -->
@@ -32,7 +32,7 @@
       </div>
       <div class="col-auto text-white">
         <!-- Thời gian -->
-        {{ postDetail.result.createAt | timeAgo}}
+        {{ postDetail?.result?.createAt | timeAgo}}
       </div>
       <div class="col ml-auto" *ngIf="postDetail?.result?.user?.userId === currentUser?.userId && isLoggedIn">
         <!-- Nút xóa, sử dụng ml-auto để đẩy sang phải -->
@@ -60,17 +60,117 @@
     </div>
   </div>
 
+  <!--Hiển thị poll-->
+<!--Hiển thị poll-->
+<div *ngIf="poll" class="container mt-4">
+  <div class="card">
+      <div class="card-header">{{ poll?.question }}</div>
+      <div class="card-body">
+          <form>
+              <ul class="list-group list-group-flush">
+                  <li class="list-group-item" *ngFor="let res of poll?.responses">
+                      <input type="checkbox" [(ngModel)]="res.selected"
+                              name="response{{res?.responseId}}"
+                              (change)="onSelectResponse(res)"
+                              [disabled]="!canSelectMore(res) || (hasVoted && !isEdittingVote)"
+                              *ngIf="!isUnlimited && isLoggedIn"/>
+                      <label>{{ res?.responseContent }}</label>
+                      <div *ngIf="viewResultsNoVote || totalVotes > 0" class="d-flex align-items-center">
+                          {{ res?.votePercentage }}%
+                          <div class="ms-2">({{ res?.voteCount }} lượt bình chọn)</div>
+                      </div>
+                  </li>
+                  <li *ngIf="viewResultsNoVote || totalVotes > 0" class="list-group-item">
+                    <div class="total-votes">Tổng số bình chọn: {{ totalVotes }}</div>
+                </li>
+              </ul>
+              <button *ngIf="isLoggedIn && !hasVoted" type="button" (click)="vote()" class="btn btn-primary mt-3">
+                  Gửi bình chọn
+              </button>
+              <button *ngIf="isLoggedIn && hasVoted && changeVote && !isEdittingVote" type="button" (click)="enableVote()" class="btn btn-primary mt-3">
+                Sửa
+              </button>
+              <div *ngIf="isLoggedIn && hasVoted && changeVote && isEdittingVote" class="d-flex justify-content-between">
+                <button type="button" (click)="updateVote()" class="btn btn-primary mt-3">
+                  Gửi bình chọn
+                </button>
+                <button type="button" (click)="cancelEdit()" class="btn btn-secondary mt-3">
+                  Hủy
+                </button>
+              </div>
+              <div *ngIf="isLoggedIn && (hasVoted && !changeVote)">
+                Đã vote và không được thay đổi.
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
 
 
 
 
-<div *ngIf="postDetail.result.commentDto; let comments of postDetail.result.commentDto"  class="container mt-4">
+
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" *ngIf="currentPage !== 1">
+        <button class="page-link" aria-label="Previous" (click)="goToPage(currentPage - 1)">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item" *ngFor="let page of pagesToShow()" [class.active]="page === currentPage">
+        <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+      </li>
+      <li class="page-item" *ngIf="currentPage !== totalPages">
+        <button class="page-link" aria-label="Next" (click)="goToPage(currentPage + 1)">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+<div *ngIf="commentList?.result?.content; let comments of commentList"  class="container mt-4">
   <div *ngFor="let comment of comments; let i = index" class="comment-box border rounded">
     <div class="row g-0">
       <!-- Left Section: Avatar and Author Name -->
       <div class="col-3 col-md-2 d-flex flex-column align-items-center p-3 border-end info-user">
-        <img src="path_to_avatar.jpg" alt="Avatar" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
-        <button class="btn btn-link btn-username mt-2 user-name">{{ comment?.user?.firstName }} {{ comment?.user?.lastName }}</button>
+        <div class="avatar-container" (mouseenter)="showOverlay = true" (mouseleave)="showOverlay = false">
+          <div class="avatar-wrapper">
+            <button class="avatar-button"   (click)="router.navigate(['/user-profile', comment?.user?.userId])">
+              <img src="{{ comment?.user?.avatar }}" alt="Avatar" class="avatar-image">
+            </button>
+            <div class="overlay" *ngIf="showOverlay">
+              <div class="fixed-size-container">
+                <div class="avatar">
+                  <!-- Avatar -->
+                  <img src="{{ comment?.user?.avatar }}" alt="Avatar" class="avatar-image">
+                </div>
+                <div class="user-info">
+                  <!-- Tên người dùng -->
+                  <h5>{{ comment?.user?.firstName }} {{ comment?.user?.lastName }}</h5>
+                  <!-- Thông tin người dùng -->
+                  <p>{{ comment?.user?.about }}</p>
+                </div>
+                <div class="stats">
+                  <!-- Số liệu -->
+                  <div class="stat">
+                    <h6>Bình luận</h6>
+                    <p>1</p>
+                  </div>
+                  <div class="stat">
+                    <h6>Like</h6>
+                    <p>2</p>
+                  </div>
+                  <div class="stat">
+                    <h6>Bài viết</h6>
+                    <p>3</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button (click)="router.navigate(['/user-profile', comment?.user?.userId])" class="btn btn-link btn-username mt-2 user-name">{{ comment?.user?.firstName }} {{ comment?.user?.lastName }}</button>
       </div>
       <!-- Right Section: Comment Details -->
       <div class="col-9 col-md-10">
@@ -80,7 +180,7 @@
           <div>
             <button *ngIf="currentUser?.userId === comment.user.userId" class="btn btn-outline-secondary btn-link btn-edit" (click)="handleEdit(i, comment.commentId)">Sửa</button>
             <button class="btn btn-outline-primary btn-link btn-share">Chia sẻ</button>
-            <span>#{{ i + 1 }}</span>
+            <span>#{{ (currentPage - 1) * pageSize + i + 1 }}</span>
           </div>
         </div>
         <!-- Middle Section: Comment Content -->
@@ -99,10 +199,9 @@
           <button *ngIf="isLoggedIn" class="btn btn-outline-primary btn-link">Trả lời</button>
         </div>
         <div class="p-2 d-flex justify-content-between align-items-center">
-          <div class="likes-container">Lượt thích: 5</div>
-          <button *ngIf="isLoggedIn" class="btn btn-outline-danger btn-link btn-like">Like</button>
-        </div>
-
+          <div class="likes-container">{{ getLikeSummary(comment?.commentId) }}</div>
+          <button *ngIf="isLoggedIn && !isCommentLikedByCurrentUser(comment.commentId)" class="btn btn-outline-danger btn-link btn-like" (click)="likeComment(comment.commentId)">Like</button>
+          <button *ngIf="isLoggedIn && isCommentLikedByCurrentUser(comment.commentId)" class="btn btn-outline-danger btn-link btn-unlike" (click)="unlikeComment(comment.commentId)">Unlike</button>        </div>
       </div>
     </div>
   </div>
@@ -115,8 +214,8 @@
     <div class="row g-0">
       <!-- Mục bên trái: Ảnh đại diện và tên người dùng -->
       <div class="col-3 col-md-2 d-flex flex-column align-items-center p-3 border-end">
-        <img src="path_to_your_avatar.jpg" alt="Ảnh đại diện" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
-        <div class="mt-2 user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+        <img src="currentUser.avatar" alt="Ảnh đại diện" class="img-fluid rounded-circle" style="width: 80px; height: 80px;">
+        <div class="mt-2 user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</div>
       </div>
       <!-- Mục bên phải: Ô nhập bình luận -->
       <div class="col-9 col-md-10 p-2">
@@ -136,7 +235,23 @@
     </div>
   </div>
 </div>
-
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" *ngIf="currentPage !== 1">
+      <button class="page-link" aria-label="Previous" (click)="goToPage(currentPage - 1)">
+        <span aria-hidden="true">&laquo;</span>
+      </button>
+    </li>
+    <li class="page-item" *ngFor="let page of pagesToShow()" [class.active]="page === currentPage">
+      <button class="page-link" (click)="goToPage(page)">{{ page }}</button>
+    </li>
+    <li class="page-item" *ngIf="currentPage !== totalPages">
+      <button class="page-link" aria-label="Next" (click)="goToPage(currentPage + 1)">
+        <span aria-hidden="true">&raquo;</span>
+      </button>
+    </li>
+  </ul>
+</nav>
 <h4 *ngIf="!isLoggedIn" class="container mt-4" style="color: #ffffff">Đăng nhập để thỏa ga bình luận nhé</h4>
 
 </div>

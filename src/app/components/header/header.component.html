@@ -31,25 +31,39 @@
               <button *ngIf="!isLoggedIn" class="btn btn-warning me-2" type="button" (click)="toLogin()">Đăng nhập</button>
               <button *ngIf="!isLoggedIn" class="btn btn-outline-warning" type="button" (click)="toRegister()">Đăng ký</button>
               <div *ngIf="isLoggedIn" class="dropdown">
-                <button class="btn position-relative" type="button">
+                <button class="btn position-relative dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fa-regular fa-bell"></i>
-                  <!-- <span *ngIf="hasNotification" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    Bạn có thể đặt một số ở đây nếu muốn hiển thị số lượng thông báo
+                  <span *ngIf="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ unreadCount }}
                     <span class="visually-hidden">Thông báo mới</span>
-                  </span> -->
+                  </span>
                 </button>
+                <ul class="dropdown-menu notification-dropdown" aria-labelledby="notificationDropdown">
+                  <li *ngFor="let notification of notifications" [class.bg-info]="notification.status === '0'">
+                      <button class="dropdown-item btn btn-link" (click)="readNotification(notification)">
+                          <div class="notification-content"
+                               [title]="notification.notificationContent"
+                               [innerHTML]="getSafeHtml(notification.notificationContent)"
+                               [style.font-weight]="notification.status === '0' ? 'bold' : 'normal'">
+                          </div>
+                          <div class="notification-time text-muted small">
+                              {{ notification.createAt | date: 'short' }}
+                          </div>
+                      </button>
+                  </li>
+                  <li *ngIf="notifications.length === 0">
+                      <a class="dropdown-item">Không có thông báo mới</a>
+                  </li>
+              </ul>
 
                 <button class="btn" type="button">
                   <i class="fa-sharp fa-regular fa-comment"></i>
                 </button>
-                <button *ngIf="currentUser" class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <button *ngIf="currentUser && isLoggedIn" class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                   {{ currentUser.firstName }} {{currentUser.lastName}}
                 </button>
-
-
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li><button class="dropdown-item" href="#">Hồ sơ</button></li>
-                  <li><button class="dropdown-item" href="#">Cài đặt</button></li>
+                  <li><button class="dropdown-item" (click)="router.navigate(['/user-profile/me'])">Hồ sơ</button></li>
                   <li><button class="dropdown-item" (click)="logout()">Đăng xuất</button></li>
                 </ul>
               </div>
